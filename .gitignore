@@ -1,0 +1,5 @@
+/node_modules/*
+/.idea/*
+/.allure/*
+/allure-results/*
+/allure-report/*
