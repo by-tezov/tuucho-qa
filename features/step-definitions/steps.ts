@@ -2,20 +2,20 @@ import { Given } from '@wdio/cucumber-framework';
 
 import { expect } from '@wdio/globals'
 
-import HomePage from '../pageobjects/home.page';
-import ProfilePage from '../pageobjects/profile.page';
+import PageHome from '../pageobjects/page.home';
+import PageA from '../pageobjects/page.a';
 
 const pages = {
-    home: HomePage,
-    profile: ProfilePage,
+    home: PageHome,
+    a: PageA,
 }
 
-Given(/I navigate to profile page/, async () => {
+Given(/I navigate to page a/, async () => {
     await driver.pause(3000);
-    await pages.home.navigateToProfile()
+    await pages.home.navigateToPageA()
     await driver.pause(3000);
-    await expect(ProfilePage.workInProgressText).toBeExisting();
-    await expect(ProfilePage.workInProgressText).toHaveText('This is currently work in progress');
+    await expect(pages.a.titleText).toBeExisting();
+    await expect(pages.a.titleText).toHaveText('Page-A');
     await driver.pause(3000);
 });
 
