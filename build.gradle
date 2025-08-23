@@ -32,7 +32,7 @@ tasks.register('npm.install', Exec) {
     doFirst {
         logInfo("npm install")
         workingDir = "$projectDir"
-        commandLine 'npm', 'install'
+        commandLine 'npm', 'ci'
     }
 }
 tasks.register('test', Exec) {
