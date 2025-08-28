@@ -19,6 +19,8 @@ export const config: WebdriverIO.Config = {
 				switch (platform.toLowerCase()) {
 					case 'android':
 						return 'Android';
+					case 'ios':
+						return 'iOS';
 					default:
 						throw new Error(`Unsupported platform: ${platform}`);
 				}
@@ -30,7 +32,20 @@ export const config: WebdriverIO.Config = {
 				}
 				return deviceName;
 			})(),
-			'appium:automationName': 'UiAutomator2',
+			'appium:automationName': (() => {
+				const platform = process.env.PLATFORM;
+				if (!platform) {
+					throw new Error('Missing required PLATFORM environment variable');
+				}
+				switch (platform.toLowerCase()) {
+					case 'android':
+						return 'UiAutomator2';
+					case 'ios':
+						return 'XCUITest';
+					default:
+						throw new Error(`Unsupported platform: ${platform}`);
+				}
+			})(),
 			'appium:noReset': false,
 			'appium:app': (() => {
 				const appPath = process.env.APP_PATH;
@@ -39,6 +54,19 @@ export const config: WebdriverIO.Config = {
 				}
 				return appPath;
 			})(),
+            //locale: 'en:EN'
+			//useNewWDA: false,
+            //startIWDP: true,
+			//platformVersion
+//            permissions: JSON.stringify({
+//            			[`${BuildConfig.iosPermissions}`]: {
+//            				notifications: 'YES',
+//            				location: 'YES',
+//            				userTracking: 'YES',
+//            			},
+//            		}),
+
+
 		},
 	],
 	logLevel: 'info',
