@@ -1,31 +1,25 @@
 {
-    "compilerOptions": {
-    "module": "NodeNext",
-    "moduleResolution": "NodeNext",
-    "target": "ES2022",
-         "lib": [
-            "es2022",
-            "dom"
-        ],
-        "types": [
-            "node",
-            "@wdio/globals/types",
-            "expect-webdriverio",
-            "@wdio/cucumber-framework"
-        ],
-        "skipLibCheck": true,
-        "noEmit": true,
-        "allowImportingTsExtensions": true,
-        "resolveJsonModule": true,
-        "isolatedModules": true,
-        "strict": true,
-        "noUnusedLocals": true,
-        "noUnusedParameters": true,
-        "noFallthroughCasesInSwitch": true
-    },
-    "include": [
-        "test",
-        "wdio.conf.ts",
-        "features"
-    ]
+	"compilerOptions": {
+		"module": "NodeNext",
+		"moduleResolution": "NodeNext",
+		"target": "ES2022",
+		"lib": ["es2022", "dom"],
+		"types": ["node", "@wdio/globals/types", "expect-webdriverio", "@wdio/cucumber-framework"],
+		"skipLibCheck": true,
+		"noEmit": true,
+		"allowImportingTsExtensions": true,
+		"resolveJsonModule": true,
+		"isolatedModules": true,
+		"strict": true,
+		"noUnusedLocals": true,
+		"noUnusedParameters": true,
+		"noFallthroughCasesInSwitch": true
+	},
+	"include": [
+		"test",
+		"wdio.conf.ts",
+		"src/features",
+		"src/**/*.feature",
+		"src/**/*.ts"
+	]
 }

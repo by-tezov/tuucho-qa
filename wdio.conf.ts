@@ -1,8 +1,30 @@
+import crypto from 'crypto';
+import fs from 'fs-extra';
+import path from 'path';
+
 const platform = process.env.PLATFORM;
 if (!platform) {
 	throw new Error('Missing required PLATFORM environment variable');
 }
 const { config: platformConfig } = await import(`./wdio.conf.capabilities.${platform}.ts`);
+
+const buildType = process.env.BUILD_TYPE;
+if (!buildType) throw new Error('Missing required BUILD_TYPE');
+
+const flavorType = process.env.FLAVOR_TYPE;
+if (!flavorType) throw new Error('Missing required FLAVOR_TYPE');
+
+const language = process.env.LANGUAGE;
+if (!language) throw new Error('Missing required LANGUAGE');
+
+const deviceSdkVersion = process.env.DEVICE_SDK_VERSION;
+if (platform == 'android' && !deviceSdkVersion) throw new Error('Missing required DEVICE_SDK_VERSION');
+
+const deviceOsVersion = process.env.DEVICE_OS_VERSION;
+if (platform == 'ios' && !deviceOsVersion) throw new Error('Missing required DEVICE_OS_VERSION');
+
+if (!deviceSdkVersion && !deviceOsVersion)
+	throw new Error('Missing required DEVICE_SDK_VERSION for android or DEVICE_OS_VERSION for ios');
 
 const deviceName = process.env.DEVICE_NAME;
 if (!deviceName) throw new Error('Missing required DEVICE_NAME');
@@ -10,13 +32,73 @@ if (!deviceName) throw new Error('Missing required DEVICE_NAME');
 const appPath = process.env.APP_PATH;
 if (!appPath) throw new Error('Missing required APP_PATH');
 
+const appVersion = process.env.APP_VERSION;
+if (!appVersion) throw new Error('Missing required APP_VERSION');
+
+const hashInput = [
+	platform,
+	buildType,
+	flavorType,
+	language,
+	deviceSdkVersion ?? '',
+	deviceOsVersion ?? '',
+	deviceName,
+	appVersion,
+].join('|');
+const hash = crypto.createHash('sha256').update(hashInput).digest('hex');
+
+export const visualTestingPaths = {
+	root: './visual-testing/baseline/',
+	baselineDir: `./visual-testing/baseline/${hash}`,
+	screenshotDir: `./visual-testing/actual/${hash}`,
+};
+
+await fs.ensureDir(visualTestingPaths.root);
+const lockFile = path.join(visualTestingPaths.root, 'baseline.lock');
+let lines: string[] = [];
+if (await fs.pathExists(lockFile)) {
+	lines = (await fs.readFile(lockFile, 'utf-8'))
+		.split('\n')
+		.map((l) => l.trim())
+		.filter(Boolean);
+}
+
+const envEntries: Record<string, string | undefined> = {
+	PLATFORM: platform,
+	BUILD_TYPE: buildType,
+	FLAVOR_TYPE: flavorType,
+	LANGUAGE: language,
+	DEVICE_SDK_VERSION: deviceSdkVersion || undefined,
+	DEVICE_OS_VERSION: deviceOsVersion || undefined,
+	DEVICE_NAME: deviceName,
+	APP_VERSION: appVersion,
+};
+const envLines = Object.entries(envEntries)
+	.filter(([_, value]) => value !== undefined && value !== '')
+	.map(([key, value]) => `${key}=${value}`)
+	.join('\n');
+
+if (!lines.includes(hash)) {
+	lines.push(hash);
+	await fs.writeFile(lockFile, lines.join('\n') + '\n', 'utf-8');
+	console.log(`[Visual] Added new hash to baseline.lock: ${hash}`);
+	fs.ensureDirSync(visualTestingPaths.baselineDir);
+	fs.writeFileSync(path.join(visualTestingPaths.baselineDir, 'ref.txt'), envLines);
+} else {
+	console.log(`[Visual] Hash already exists in baseline.lock: ${hash}`);
+}
+fs.removeSync(visualTestingPaths.screenshotDir);
+fs.ensureDirSync(visualTestingPaths.screenshotDir);
+fs.writeFileSync(path.join(visualTestingPaths.screenshotDir, 'ref.txt'), envLines);
+
 const defaultConfig: WebdriverIO.Config = {
 	runner: 'local',
+	injectGlobals: true,
 	hostname: 'android-appium',
 	port: 4723,
 	path: '/',
 	tsConfigPath: './tsconfig.json',
-	specs: ['./features/**/*.feature'],
+	specs: ['./src/features/**/*.feature'],
 	exclude: [],
 	maxInstances: 10,
 	capabilities: [
@@ -26,7 +108,7 @@ const defaultConfig: WebdriverIO.Config = {
 			'appium:app': appPath,
 		},
 	],
-	logLevel: 'info',
+	logLevel: 'warn',
 	bail: 0,
 	waitforTimeout: 10000,
 	connectionRetryTimeout: 120000,
@@ -39,12 +121,26 @@ const defaultConfig: WebdriverIO.Config = {
 			{
 				outputDir: 'allure-results',
 				disableWebdriverStepsReporting: true,
-				disableWebdriverScreenshotsReporting: false,
+				disableWebdriverScreenshotsReporting: true,
+				disableMochaHooks: true,
+				reportedEnvironmentVars: Object.fromEntries(
+					Object.entries({
+						PLATFORM: process.env.PLATFORM,
+						BUILD_TYPE: process.env.BUILD_TYPE,
+						FLAVOR_TYPE: process.env.FLAVOR_TYPE,
+						LANGUAGE: process.env.LANGUAGE,
+						DEVICE_SDK_VERSION: process.env.DEVICE_SDK_VERSION,
+						DEVICE_OS_VERSION: process.env.DEVICE_OS_VERSION,
+						DEVICE_NAME: process.env.DEVICE_NAME,
+						APP_PATH: process.env.APP_PATH,
+						APP_VERSION: process.env.APP_VERSION,
+					}).filter(([_, v]) => v != null && v !== ''),
+				),
 			},
 		],
 	],
 	cucumberOpts: {
-		require: ['./features/step-definitions/steps.ts'],
+		require: ['./src/step-definitions/**/*.ts'],
 		backtrace: false,
 		requireModule: [],
 		dryRun: false,

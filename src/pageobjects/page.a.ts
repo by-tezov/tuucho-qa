@@ -1,5 +1,5 @@
 import { $ } from '@wdio/globals';
-import Page from './page';
+import Page from './page.ts';
 
 const platform = process.env.PLATFORM;
 if (!platform) {
@@ -17,7 +17,7 @@ class PageA extends Page {
 
 	private get btnPageB() {
 		if (platform == 'android') {
-			return $('android=new UiSelector().className("android.widget.Button").instance(2)');
+			return $('android=new UiSelector().className("android.widget.Button").instance(1)');
 		} else {
 			return $('//XCUIElementTypeButton[@name="Page-B"]');
 		}
