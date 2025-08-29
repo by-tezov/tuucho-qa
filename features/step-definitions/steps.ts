@@ -5,6 +5,7 @@ import { expect } from '@wdio/globals';
 import PageHome from '../pageobjects/page.home';
 import PageA from '../pageobjects/page.a';
 import PageB from '../pageobjects/page.b';
+import compareScreenshot from '../screenshotHelper.js';
 
 const pages = {
 	home: PageHome,
@@ -19,8 +20,10 @@ Given(/I navigate to page a/, async () => {
 	await expect(pages.pageA.titleText).toBeExisting();
 	await expect(pages.pageA.titleText).toHaveText('Page-A');
 	await driver.pause(1500);
+	await compareScreenshot('pageA');
 	await pages.pageA.navigateToPageB();
 	await driver.pause(1500);
 	await expect(pages.pageB.titleText).toBeExisting();
 	await expect(pages.pageB.titleText).toHaveText('Page-B');
+	await compareScreenshot('pageB');
 });
