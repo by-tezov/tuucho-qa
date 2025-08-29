@@ -1,44 +1,29 @@
-export const config: WebdriverIO.Config = {
+const platform = process.env.PLATFORM;
+if (!platform) {
+	throw new Error('Missing required PLATFORM environment variable');
+}
+const { config: platformConfig } = await import(`./wdio.conf.capabilities.${platform}.ts`);
+
+const deviceName = process.env.DEVICE_NAME;
+if (!deviceName) throw new Error('Missing required DEVICE_NAME');
+
+const appPath = process.env.APP_PATH;
+if (!appPath) throw new Error('Missing required APP_PATH');
+
+const defaultConfig: WebdriverIO.Config = {
 	runner: 'local',
 	hostname: 'android-appium',
 	port: 4723,
 	path: '/',
 	tsConfigPath: './tsconfig.json',
 	specs: ['./features/**/*.feature'],
-	exclude: [
-		// 'path/to/excluded/files'
-	],
+	exclude: [],
 	maxInstances: 10,
 	capabilities: [
 		{
-			platformName: (() => {
-				const platform = process.env.PLATFORM;
-				if (!platform) {
-					throw new Error('Missing required PLATFORM environment variable');
-				}
-				switch (platform.toLowerCase()) {
-					case 'android':
-						return 'Android';
-					default:
-						throw new Error(`Unsupported platform: ${platform}`);
-				}
-			})(),
-			'appium:deviceName': (() => {
-				const deviceName = process.env.DEVICE_NAME;
-				if (!deviceName) {
-					throw new Error('Missing required DEVICE_NAME environment variable');
-				}
-				return deviceName;
-			})(),
-			'appium:automationName': 'UiAutomator2',
+			'appium:deviceName': deviceName,
 			'appium:noReset': false,
-			'appium:app': (() => {
-				const appPath = process.env.APP_PATH;
-				if (!appPath) {
-					throw new Error('Missing required APP_PATH environment variable');
-				}
-				return appPath;
-			})(),
+			'appium:app': appPath,
 		},
 	],
 	logLevel: 'info',
@@ -250,4 +235,16 @@ export const config: WebdriverIO.Config = {
 	 */
 	// afterAssertion: function(params) {
 	// }
+};
+
+export const config: WebdriverIO.Config = {
+	...defaultConfig,
+	...platformConfig,
+	capabilities: [
+		...defaultConfig.capabilities.map((capability, index) => ({
+			...capability,
+			...(platformConfig.capabilities[index] || {}),
+		})),
+		...(platformConfig.capabilities.slice(defaultConfig.capabilities.length) || []),
+	],
 };
