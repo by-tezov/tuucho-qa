@@ -1,4 +1,88 @@
 // Helper functions
+fun logSuccess(text: String) {
+    println("\u001B[32m$text\u001B[0m")
+}
+
+fun logInfo(text: String) {
+    println("\u001B[34m$text\u001B[0m")
+}
+
+fun logWarning(text: String) {
+    println("\u001B[33m$text\u001B[0m")
+}
+
+
+// Generic tasks
+tasks.register<Exec>("code.prettier") {
+    description = "Code prettier"
+    group = "_system"
+    doFirst {
+        commandLine("npm", "run", "prettier")
+    }
+}
+
+tasks.register<Exec>("npm.install") {
+    description = "Install npm"
+    group = "_node"
+    doFirst {
+        commandLine("npm", "ci", "--no-audit")
+    }
+}
+
+// ./gradlew test -Planguage="" -Pplatform="android" -PbuildType="" -PflavorType="" -PdeviceName="Pixel_7_pro_API_35" -PdeviceSdkVersion="35" -PappVersion="" -PappPath="/home/tezov/Local/tuucho" -PappFile="android-debug.apk"
+
+tasks.register<Exec>("test") {
+    description = "test"
+    group = "_test"
+    doFirst {
+        val language = project.findProperty("language") as String
+        val platform = project.findProperty("platform") as String
+        val buildType = project.findProperty("buildType") as String
+        val flavorType = project.findProperty("flavorType") as String
+        logInfo("test:: language: $language, platform:$platform, buildType:$buildType, flavorType:$flavorType")
+
+        val deviceName = project.findProperty("deviceName") as String
+        val deviceOsVersion = project.findProperty("deviceOsVersion") as String?
+        val deviceSdkVersion = project.findProperty("deviceSdkVersion") as String?
+        logInfo("test:: deviceName:$deviceName, deviceOsVersion:$deviceOsVersion, deviceSdkVersion:$deviceSdkVersion")
+
+        val appVersion = project.findProperty("appVersion") as String
+        val appPath = project.findProperty("appPath") as String
+        val appFile = project.findProperty("appFile") as String
+        logInfo("test:: appVersion: $appVersion, appPath: $appPath, appFile: $appFile")
+
+        val tags = project.findProperty("tags") as String?
+        logInfo("test:: tags: $tags")
+
+        environment("PLATFORM", platform)
+        environment("LANGUAGE", language)
+        environment("BUILD_TYPE", buildType)
+        environment("FLAVOR_TYPE", flavorType)
+        environment("DEVICE_NAME", deviceName)
+        if (deviceSdkVersion != null) {
+            environment("DEVICE_SDK_VERSION", deviceSdkVersion)
+        }
+        if (deviceOsVersion != null) {
+            environment("DEVICE_OS_VERSION", deviceOsVersion)
+        }
+        environment("APP_VERSION", appVersion)
+        environment("APP_PATH", "$appPath/$appFile")
+        if (tags != null) {
+            environment("TAGS", "--verbose --grep $tags")
+        }
+        commandLine("npm", "run", "test")
+    }
+}
+
+tasks.register<Exec>("allure.generate") {
+    description = "Allure generate"
+    group = "_report"
+    doFirst {
+        commandLine("npm", "run", "allure:generate")
+    }
+}
+
+// IOS
 fun getAvailableDevices(): Map<String, List<String>> {
     val command = ProcessBuilder("xcrun", "simctl", "list", "devices")
         .start()
@@ -42,7 +126,7 @@ fun getSimulatorId(device: String, devices: Map<String, List<String>>? = null): 
 }
 
 fun createSimulator(deviceName: String, devices: Map<String, List<String>>? = null): String {
-    var deviceId = getSimulatorId(deviceName)
+    var deviceId = getSimulatorId(deviceName, devices)
     if (deviceId == null) {
         val model: String
         val core: String
@@ -58,74 +142,6 @@ fun createSimulator(deviceName: String, devices: Map<String, List<String>>? = nu
             .start().inputStream.bufferedReader().readText().trim()
     }
     return deviceId
-}
-
-// Generic tasks
-tasks.register<Exec>("code.prettier") {
-    description = "Code prettier"
-    group = "_system"
-    doFirst {
-        commandLine("npm", "run", "prettier")
-    }
-}
-
-tasks.register<Exec>("npm.install") {
-    description = "Install npm"
-    group = "_node"
-    doFirst {
-        commandLine("npm", "ci")
-    }
-}
-
-tasks.register<Exec>("test") {
-    description = "test"
-    group = "_test"
-    doFirst {
-        val language = project.findProperty("language") as String
-        val platform = project.findProperty("platform") as String
-        val buildType = project.findProperty("buildType") as String
-        val flavorType = project.findProperty("flavorType") as String
-        println("config:: language: $language, platform:$platform, buildType:$buildType, flavorType:$flavorType")
-
-        val deviceName = project.findProperty("deviceName") as String
-        val deviceOsVersion = project.findProperty("deviceOsVersion") as String?
-        val deviceSdkVersion = project.findProperty("deviceSdkVersion") as String?
-        println("deviceName:$deviceName, deviceOsVersion:$deviceOsVersion, deviceSdkVersion:$deviceSdkVersion")
-
-        val appVersion = project.findProperty("appVersion") as String
-        val appPath = project.findProperty("appPath") as String
-        val appFile = project.findProperty("appFile") as String
-        println("config:: appVersion: $appVersion, appPath: $appPath, appFile: $appFile")
-
-        val tags = project.findProperty("tags") as String?
-        println("config:: tags: $tags")
-
-        environment("PLATFORM", platform)
-        environment("LANGUAGE", language)
-        environment("BUILD_TYPE", buildType)
-        environment("FLAVOR_TYPE", flavorType)
-        environment("DEVICE_NAME", deviceName)
-        if (deviceSdkVersion != null) {
-            environment("DEVICE_SDK_VERSION", deviceSdkVersion)
-        }
-        if (deviceOsVersion != null) {
-            environment("DEVICE_OS_VERSION", deviceOsVersion)
-        }
-        environment("APP_VERSION", appVersion)
-        environment("APP_PATH", "$appPath/$appFile")
-        if (tags != null) {
-            environment("TAGS", "--verbose --grep $tags")
-        }
-        commandLine("npm", "run", "test")
-    }
-}
-
-tasks.register<Exec>("allure.generate") {
-    description = "Allure generate"
-    group = "_report"
-    doFirst {
-        commandLine("npm", "run", "allure:generate")
-    }
 }
 
 tasks.register<Exec>("appium.start") {
@@ -170,7 +186,7 @@ tasks.register("simulator.start") {
     
     doLast {
         val deviceName = project.findProperty("deviceName") as String
-        println("simulator.start:: deviceName:$deviceName")
+        logInfo("simulator.start:: deviceName:$deviceName")
 
         val deviceId = createSimulator(deviceName)
         ProcessBuilder("xcrun", "simctl", "boot", deviceId).start().waitFor()
@@ -184,6 +200,8 @@ tasks.register("simulator.stop") {
     group = "_simulator"
     doFirst {
         val deviceName = project.findProperty("deviceName") as String
+        logInfo("simulator.stop:: deviceName:$deviceName")
+
         val deviceId = getSimulatorId(deviceName)
         if (deviceId != null) {
             ProcessBuilder("xcrun", "simctl", "shutdown", deviceId).start().waitFor()

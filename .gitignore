@@ -5,3 +5,4 @@
 /allure-report/*
 /.gradle/
 /build/reports/problems/
+/visual-testing/*
