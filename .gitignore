@@ -4,3 +4,4 @@
 /allure-results/*
 /allure-report/*
 /.gradle/
+/build/reports/problems/
