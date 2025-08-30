@@ -1,6 +1,3 @@
-import path from 'node:path';
-import type { VisualServiceOptions } from '@wdio/visual-service';
-
 const platform = process.env.PLATFORM;
 if (!platform) {
 	throw new Error('Missing required PLATFORM environment variable');
@@ -61,25 +58,6 @@ const defaultConfig: WebdriverIO.Config = {
 		timeout: 60000,
 		ignoreUndefinedDefinitions: false,
 	},
-	services: [
-        [
-            "visual",
-            {
-                baselineFolder: path.join(process.cwd(), "baseline"),
-                screenshotPath: path.join(process.cwd(), "screenshots"),
-                formatImageName: "{tag}-{logName}-{width}x{height}",
-                savePerInstance: true,
-                autoSaveBaseline: true,
-                compareOptions: {
-					returnAllCompareData: true,
-					ignoreNothing: true,
-					misMatchTolerance: 0,
-				},
-				
-
-            } satisfies VisualServiceOptions,
-        ],
-    ],
 
 	//
 	// =====
