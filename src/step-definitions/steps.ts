@@ -7,6 +7,11 @@ import PageB from '../pageobjects/page.b.ts';
 
 import compareScreenshot from '../screenshotHelper.ts';
 
+const platform = process.env.PLATFORM;
+if (!platform) {
+	throw new Error('Missing required PLATFORM environment variable');
+}
+
 const pages = {
 	home: PageHome,
 	pageA: PageA,
@@ -17,15 +22,15 @@ const pages = {
 Given(/^I am on Home Page$/, async () => {
 	await driver.pause(3000);
 	// Handle possible Android warning dialog
-	const dialog = await $$('android=new UiSelector().resourceId("android:id/message")');
-	if (dialog.length > 0) {
-		const allowBtn = await $('android=new UiSelector().resourceId("android:id/button1")');
-		if (await allowBtn.isDisplayed()) {
-			await allowBtn.click();
-		}
-	}
-
-	//await expect(pages.home.root).toBeExisting(); // assumes PageHome has a root locator
+	if(platform == 'android') {
+        const dialog = await $$('android=new UiSelector().resourceId("android:id/message")');
+        if (dialog.length > 0) {
+            const allowBtn = await $('android=new UiSelector().resourceId("android:id/button1")');
+            if (await allowBtn.isDisplayed()) {
+                await allowBtn.click();
+            }
+        }
+    }
 });
 
 // ====== PAGE A ======

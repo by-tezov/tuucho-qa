@@ -11,7 +11,6 @@ fun logWarning(text: String) {
     println("\u001B[33m$text\u001B[0m")
 }
 
-
 // Generic tasks
 tasks.register<Exec>("code.prettier") {
     description = "Code prettier"
@@ -25,7 +24,7 @@ tasks.register<Exec>("npm.install") {
     description = "Install npm"
     group = "_node"
     doFirst {
-        commandLine("npm", "ci", "--no-audit")
+        commandLine("sh", "-c", "npm ci")
     }
 }
 
@@ -39,17 +38,13 @@ tasks.register<Exec>("test") {
         val platform = project.findProperty("platform") as String
         val buildType = project.findProperty("buildType") as String
         val flavorType = project.findProperty("flavorType") as String
-        logInfo("test:: language: $language, platform:$platform, buildType:$buildType, flavorType:$flavorType")
-
         val deviceName = project.findProperty("deviceName") as String
-        val deviceOsVersion = project.findProperty("deviceOsVersion") as String?
-        val deviceSdkVersion = project.findProperty("deviceSdkVersion") as String?
-        logInfo("test:: deviceName:$deviceName, deviceOsVersion:$deviceOsVersion, deviceSdkVersion:$deviceSdkVersion")
+        val hash = project.findProperty("hash") as String
+        logInfo("test:: language: $language, platform:$platform, buildType:$buildType, flavorType:$flavorType, deviceName: $deviceName, hash: $hash")
 
-        val appVersion = project.findProperty("appVersion") as String
         val appPath = project.findProperty("appPath") as String
         val appFile = project.findProperty("appFile") as String
-        logInfo("test:: appVersion: $appVersion, appPath: $appPath, appFile: $appFile")
+        logInfo("test:: appPath: $appPath, appFile: $appFile")
 
         val tags = project.findProperty("tags") as String?
         logInfo("test:: tags: $tags")
@@ -59,13 +54,7 @@ tasks.register<Exec>("test") {
         environment("BUILD_TYPE", buildType)
         environment("FLAVOR_TYPE", flavorType)
         environment("DEVICE_NAME", deviceName)
-        if (deviceSdkVersion != null) {
-            environment("DEVICE_SDK_VERSION", deviceSdkVersion)
-        }
-        if (deviceOsVersion != null) {
-            environment("DEVICE_OS_VERSION", deviceOsVersion)
-        }
-        environment("APP_VERSION", appVersion)
+        environment("VISUAL_TESTING_HASH", hash)
         environment("APP_PATH", "$appPath/$appFile")
         if (tags != null) {
             environment("TAGS", "--verbose --grep $tags")
@@ -144,11 +133,11 @@ fun createSimulator(deviceName: String, devices: Map<String, List<String>>? = nu
     return deviceId
 }
 
-tasks.register<Exec>("appium.start") {
+tasks.register("appium.start") {
     description = "Appium start"
     group = "_appium"
     doFirst {
-        commandLine("sh", "-c", "appium --allow-cors &")
+        ProcessBuilder("sh", "-c", "BUILD_ID=dontKillMe nohup appium --allow-cors > appium.log 2>&1 &").start()
 
         val maxRetries = 10
         var retries = 0
