@@ -11,9 +11,6 @@ const { config: platformConfig } = await import(`./wdio.conf.capabilities.${plat
 const buildType = process.env.BUILD_TYPE;
 if (!buildType) throw new Error('Missing required BUILD_TYPE');
 
-const flavorType = process.env.FLAVOR_TYPE;
-if (!flavorType) throw new Error('Missing required FLAVOR_TYPE');
-
 const language = process.env.LANGUAGE;
 if (!language) throw new Error('Missing required LANGUAGE');
 
@@ -36,7 +33,6 @@ await fs.ensureDir(visualTestingPaths.root);
 const envEntries = {
 	PLATFORM: platform,
 	BUILD_TYPE: buildType,
-	FLAVOR_TYPE: flavorType,
 	LANGUAGE: language,
 	DEVICE_NAME: deviceName,
 };
@@ -81,7 +77,6 @@ const defaultConfig: WebdriverIO.Config = {
 					Object.entries({
 						PLATFORM: platform,
 						BUILD_TYPE: buildType,
-						FLAVOR_TYPE: flavorType,
 						LANGUAGE: language,
 						DEVICE_NAME: deviceName,
 						APP_PATH: appPath
