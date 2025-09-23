@@ -28,8 +28,6 @@ tasks.register<Exec>("npm.install") {
     }
 }
 
-// ./gradlew test -Planguage="" -Pplatform="android" -PbuildType="" -PflavorType="" -PdeviceName="Pixel_7_pro_API_35" -PdeviceSdkVersion="35" -PappVersion="" -PappPath="/home/tezov/Local/tuucho" -PappFile="android-debug.apk"
-
 tasks.register<Exec>("test") {
     description = "test"
     group = "_test"
@@ -37,10 +35,9 @@ tasks.register<Exec>("test") {
         val language = project.findProperty("language") as String
         val platform = project.findProperty("platform") as String
         val buildType = project.findProperty("buildType") as String
-        val flavorType = project.findProperty("flavorType") as String
         val deviceName = project.findProperty("deviceName") as String
         val hash = project.findProperty("hash") as String
-        logInfo("test:: language: $language, platform:$platform, buildType:$buildType, flavorType:$flavorType, deviceName: $deviceName, hash: $hash")
+        logInfo("test:: language: $language, platform:$platform, buildType:$buildType, deviceName: $deviceName, hash: $hash")
 
         val appPath = project.findProperty("appPath") as String
         val appFile = project.findProperty("appFile") as String
@@ -52,7 +49,6 @@ tasks.register<Exec>("test") {
         environment("PLATFORM", platform)
         environment("LANGUAGE", language)
         environment("BUILD_TYPE", buildType)
-        environment("FLAVOR_TYPE", flavorType)
         environment("DEVICE_NAME", deviceName)
         environment("VISUAL_TESTING_HASH", hash)
         environment("APP_PATH", "$appPath/$appFile")
