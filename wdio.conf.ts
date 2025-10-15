@@ -44,7 +44,6 @@ fs.ensureDirSync(visualTestingPaths.screenshotDir);
 const defaultConfig: WebdriverIO.Config = {
 	runner: 'local',
 	injectGlobals: true,
-	hostname: 'android-appium',
 	port: 4723,
 	path: '/',
 	tsConfigPath: './tsconfig.json',
@@ -79,7 +78,7 @@ const defaultConfig: WebdriverIO.Config = {
 						BUILD_TYPE: buildType,
 						LANGUAGE: language,
 						DEVICE_NAME: deviceName,
-						APP_PATH: appPath
+						APP_PATH: appPath,
 					}).filter(([_, v]) => v != null && v !== ''),
 				),
 			},

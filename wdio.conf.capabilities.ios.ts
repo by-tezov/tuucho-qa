@@ -4,13 +4,13 @@ export const config: WebdriverIO.Config = {
 		{
 			platformName: 'iOS',
 			'appium:automationName': 'XCUITest',
-//             'appium:permissions': JSON.stringify({
-//               your.bundle.id: {
-//                 notifications: 'YES',
-//                 location: 'ALWAYS',
-//                 userTracking: 'YES',
-//               },
-//             }),
+			//             'appium:permissions': JSON.stringify({
+			//               your.bundle.id: {
+			//                 notifications: 'YES',
+			//                 location: 'ALWAYS',
+			//                 userTracking: 'YES',
+			//               },
+			//             }),
 		},
 	],
 };

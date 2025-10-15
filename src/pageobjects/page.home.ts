@@ -7,16 +7,20 @@ if (!platform) {
 }
 
 class PageHome extends Page {
-	private get btnPageA() {
+	public get title() {
+		if (platform == 'android') {
+			return $('android=new UiSelector().text("Inscription à la new letter")');
+		} else {
+			return $('//XCUIElementTypeStaticText[@name="Inscription à la new letter"]');
+		}
+	}
+
+	public get btn() {
 		if (platform == 'android') {
 			return $('android=new UiSelector().className("android.widget.Button").instance(2)');
 		} else {
 			return $('//XCUIElementTypeButton[@name="Page-A"]');
 		}
-	}
-
-	public async navigateToPageA() {
-		await this.btnPageA.click();
 	}
 }
 

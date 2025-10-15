@@ -7,24 +7,21 @@ if (!platform) {
 }
 
 class PageA extends Page {
-	public get titleText() {
+
+	public get title() {
 		if (platform == 'android') {
-			return $('android=new UiSelector().text("Page-A")');
+			return $('android=new UiSelector().text("Page TLL of 10s")');
 		} else {
-			return $('//XCUIElementTypeStaticText[@name="Page-A"]');
+			return $('//XCUIElementTypeStaticText[@name="Page TLL of 10s"]');
 		}
 	}
 
-	private get btnPageB() {
+	public get btn() {
 		if (platform == 'android') {
 			return $('android=new UiSelector().className("android.widget.Button").instance(1)');
 		} else {
 			return $('//XCUIElementTypeButton[@name="Page-B"]');
 		}
-	}
-
-	public async navigateToPageB() {
-		await this.btnPageB.click();
 	}
 }
 

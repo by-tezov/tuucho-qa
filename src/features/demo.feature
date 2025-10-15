@@ -1,11 +1,18 @@
 Feature: Check everything works fine
 
-  Scenario: Navigate from Home to Page A
-    Given I am on Home Page
-    When I navigate to Page A
-    Then I see title 'Page A'
+  Scenario: Navigate from Login to Home Page
+    Given I am on 'Login Page'
+    And I enter login 'my@login'
+    And I enter password 'my-super-secret-password'
+    When I navigate to 'Home Page'
+    Then I should be on 'Home Page'
 
-  Scenario: Navigate from Page A to Page B
-    Given I am on Page A
-    When I navigate to Page B
-    Then I see title 'Page B'
+  Scenario: Navigate from Home to A Page
+    Given I am on 'Home Page'
+    When I navigate to 'A Page'
+    Then I should be on 'A Page'
+
+  Scenario: Navigate from A to B Page
+    Given I am on 'A Page'
+    When I navigate to 'B Page'
+    Then I should be on 'B Page'
