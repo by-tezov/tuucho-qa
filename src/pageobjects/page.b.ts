@@ -7,11 +7,12 @@ if (!platform) {
 }
 
 class PageB extends Page {
-	public get titleText() {
+
+	public get title() {
 		if (platform == 'android') {
-			return $('android=new UiSelector().text("Page-B")');
+			return $('android=new UiSelector().text("Page TLL of single use")');
 		} else {
-			return $('//XCUIElementTypeStaticText[@name="Page-B"]');
+			return $('//XCUIElementTypeStaticText[@name="Page TLL of single use"]');
 		}
 	}
 }

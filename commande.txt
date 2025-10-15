@@ -1,0 +1,17 @@
+{
+  "platformName": "Android",
+  "appium:deviceName": "Pixel 8:5554",
+  "appium:automationName": "UiAutomator2",
+  "appium:noReset": false,
+  "app": "/home/tezov/Local/android-dev.apk"
+}
+
+
+./gradlew test \
+  -Planguage=en \
+  -Pplatform=android \
+  -PbuildType=dev \
+  -PdeviceName="Pixel 8:5554" \
+  -Phash=dev \
+  -PappPath=/home/tezov/Local \
+  -PappFile=android-dev.apk

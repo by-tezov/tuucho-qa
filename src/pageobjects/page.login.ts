@@ -1,0 +1,43 @@
+import { $ } from '@wdio/globals';
+import Page from './page.ts';
+
+const platform = process.env.PLATFORM;
+if (!platform) {
+	throw new Error('Missing required PLATFORM environment variable');
+}
+
+class PageLogin extends Page {
+	public get title() {
+		if (platform == 'android') {
+			return $('android=new UiSelector().text("Please enter your credentials")');
+		} else {
+			return $('//XCUIElementTypeStaticText[@name="Please enter your credentials"]');
+		}
+	}
+
+	public get login() {
+		if (platform == 'android') {
+			return $('android=new UiSelector().className("android.widget.EditText").instance(0)');
+		} else {
+			return $('//XCUIElementTypeTextField[@name="Login"]');
+		}
+	}
+
+	public get password() {
+		if (platform == 'android') {
+			return $('android=new UiSelector().className("android.widget.EditText").instance(1)');
+		} else {
+			return $('//XCUIElementTypeTextField[@name="Password"]');
+		}
+	}
+
+	public get btn() {
+		if (platform == 'android') {
+			return $('android=new UiSelector().className("android.widget.Button")');
+		} else {
+			return $('//XCUIElementTypeButton[@name="Connection"]');
+		}
+	}
+}
+
+export default new PageLogin();
