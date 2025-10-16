@@ -19,7 +19,7 @@ class PageLogin extends Page {
 		if (platform == 'android') {
 			return $('android=new UiSelector().className("android.widget.EditText").instance(0)');
 		} else {
-			return $('//XCUIElementTypeTextField[@name="Login"]');
+			return $('//XCUIElementTypeScrollView/XCUIElementTypeOther/XCUIElementTypeOther/XCUIElementTypeTextView[1]');
 		}
 	}
 
@@ -27,7 +27,7 @@ class PageLogin extends Page {
 		if (platform == 'android') {
 			return $('android=new UiSelector().className("android.widget.EditText").instance(1)');
 		} else {
-			return $('//XCUIElementTypeTextField[@name="Password"]');
+			return $('//XCUIElementTypeScrollView/XCUIElementTypeOther/XCUIElementTypeOther/XCUIElementTypeTextView[2]');
 		}
 	}
 
