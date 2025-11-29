@@ -17,7 +17,7 @@ class PageHome extends Page {
 
 	public get btn() {
 		if (platform == 'android') {
-			return $('android=new UiSelector().className("android.widget.Button").instance(2)');
+			return $('android=new UiSelector().className("android.widget.Button").instance(3)');
 		} else {
 			return $('//XCUIElementTypeButton[@name="Page-A"]');
 		}
