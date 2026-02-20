@@ -20,7 +20,7 @@ class PageE extends Page {
 		if (platform == 'android') {
 			return $('android=new UiSelector().className("android.widget.Button").instance(2)');
 		} else {
-			return $('//XCUIElementTypeButton[@name="Next"]');
+			return $('//XCUIElementTypeButton[@name="next"]');
 		}
 	}
 
@@ -36,7 +36,7 @@ class PageE extends Page {
 		if (platform == 'android') {
 			return $('android=new UiSelector().className("android.widget.Button").instance(0)');
 		} else {
-			return $('//XCUIElementTypeButton[@name="Back"]');
+			return $('//XCUIElementTypeButton[@name="back"]');
 		}
 	}
 }

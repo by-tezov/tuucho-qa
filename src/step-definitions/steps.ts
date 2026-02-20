@@ -136,3 +136,10 @@ Given(/^I enter password '(.+)'$/, async (password: string) => {
 	await expect(PageLogin.password).toBeExisting();
 	await PageLogin.password.setValue(password);
 });
+
+Given(/^I keyboard tap enter$/, async () => {
+    if (PageLogin.btnEnter) {
+        await PageLogin.btnEnter.click();
+        await driver.pause(500);
+    }
+});
