@@ -6,21 +6,29 @@ if (!platform) {
 	throw new Error('Missing required PLATFORM environment variable');
 }
 
-class PageB extends Page {
+class PageE extends Page {
 
 	public get title() {
 		if (platform == 'android') {
-			return $('android=new UiSelector().text("Page-B")');
+			return $('android=new UiSelector().text("Page-E")');
 		} else {
-			return $('//XCUIElementTypeStaticText[@name="Page-B"]');
+			return $('//XCUIElementTypeStaticText[@name="Page-E"]');
 		}
 	}
 
 	public get btnNext() {
 		if (platform == 'android') {
-			return $('android=new UiSelector().className("android.widget.Button").instance(1)');
+			return $('android=new UiSelector().className("android.widget.Button").instance(2)');
 		} else {
 			return $('//XCUIElementTypeButton[@name="Next"]');
+		}
+	}
+
+	public get btnPageB() {
+		if (platform == 'android') {
+			return $('android=new UiSelector().className("android.widget.Button").instance(1)');
+		} else {
+			return $('//XCUIElementTypeButton[@name="Page-B"]');
 		}
 	}
 
@@ -31,7 +39,6 @@ class PageB extends Page {
 			return $('//XCUIElementTypeButton[@name="Back"]');
 		}
 	}
-
 }
 
-export default new PageB();
+export default new PageE();

@@ -1,0 +1,19 @@
+appium --port 4723 --allow-cors
+
+{
+  "platformName": "Android",
+  "appium:deviceName": "Pixel 7 Pro API 35",
+  "appium:automationName": "UiAutomator2",
+  "appium:app": "/home/tezov/Local/app.android-mock.apk",
+  "appium:autoGrantPermissions": true,
+  "appium:noReset": false
+}
+
+./gradlew test \
+  -Planguage=en \
+  -Pplatform=android \
+  -PbuildType=debug \
+  -PdeviceName="Pixel 7 Pro API 35" \
+  -Phash=local123 \
+  -PappPath=/home/tezov/Local \
+  -PappFile=app.android-mock.apk

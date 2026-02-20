@@ -31,7 +31,7 @@ class PageLogin extends Page {
 		}
 	}
 
-	public get btn() {
+	public get btnNext() {
 		if (platform == 'android') {
 			return $('android=new UiSelector().className("android.widget.Button")');
 		} else {

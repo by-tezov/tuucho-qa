@@ -9,17 +9,33 @@ if (!platform) {
 class PageHome extends Page {
 	public get title() {
 		if (platform == 'android') {
-			return $('android=new UiSelector().text("Inscription à la new letter")');
+			return $('android=new UiSelector().text("Newsletter subscription")');
 		} else {
-			return $('//XCUIElementTypeStaticText[@name="Inscription à la new letter"]');
+			return $('//XCUIElementTypeStaticText[@name="Newsletter subscription"]');
 		}
 	}
 
-	public get btn() {
+	public get titleFrench() {
+		if (platform == 'android') {
+			return $('android=new UiSelector().text("Inscription à la newsletter")');
+		} else {
+			return $('//XCUIElementTypeStaticText[@name="Inscription à la newsletter"]');
+		}
+	}
+
+	public get btnNext() {
 		if (platform == 'android') {
 			return $('android=new UiSelector().className("android.widget.Button").instance(3)');
 		} else {
-			return $('//XCUIElementTypeButton[@name="Page-A"]');
+			return $('//XCUIElementTypeButton[@name="Next"]');
+		}
+	}
+
+	public get btnLanguage() {
+		if (platform == 'android') {
+			return $('android=new UiSelector().className("android.view.View").instance(3)');
+		} else {
+			return $(''); //TODO
 		}
 	}
 }
