@@ -35,9 +35,18 @@ class PageLogin extends Page {
 		if (platform == 'android') {
 			return $('android=new UiSelector().className("android.widget.Button")');
 		} else {
-			return $('//XCUIElementTypeButton[@name="Connection"]');
+			return $('//XCUIElementTypeButton[@name="Enter"]');
 		}
 	}
+
+	public get btnEnter() {
+		if (platform == 'android') {
+			return null; /* ignored on android since by default keyboard doesn't open */
+		} else {
+			return $('//XCUIElementTypeButton[@name="Return"]');
+		}
+	}
+
 }
 
 export default new PageLogin();

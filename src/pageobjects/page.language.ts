@@ -19,7 +19,7 @@ class PageLanguage extends Page {
 		if (platform == 'android') {
 			return $('android=new UiSelector().className("android.view.View").instance(4)');
 		} else {
-			return $(''); //TODO
+			return $('//XCUIElementTypeImage[@name="French flag"]');
 		}
 	}
 }

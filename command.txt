@@ -17,3 +17,21 @@ appium --port 4723 --allow-cors
   -Phash=local123 \
   -PappPath=/home/tezov/Local \
   -PappFile=app.android-mock.apk
+
+{
+  "platformName": "iOS",
+  "appium:deviceName": "appium-test-simulator",
+  "appium:automationName": "XCUITest",
+  "appium:app": "/Users/tezov/Local/ios.app",
+  "appium:noReset": false
+}
+
+./gradlew test \
+  -Planguage=en \
+  -Pplatform=ios \
+  -PbuildType=debug \
+  -PdeviceName="appium-test-simulator" \
+  -Phash=local123 \
+  -PappPath=/Users/tezov/Local \
+  -PappFile=ios.app
+

@@ -4,6 +4,7 @@ Feature: Check everything works fine
     Given I am on 'Login Page'
     And I enter login 'my@login'
     And I enter password 'my-super-secret-password'
+    And I keyboard tap enter
     When I navigate to 'Home Page'
     Then I should be on 'Home Page'
 

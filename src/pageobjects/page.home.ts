@@ -35,7 +35,7 @@ class PageHome extends Page {
 		if (platform == 'android') {
 			return $('android=new UiSelector().className("android.view.View").instance(3)');
 		} else {
-			return $(''); //TODO
+			return $('//XCUIElementTypeImage[@name="language-logo"]');
 		}
 	}
 }

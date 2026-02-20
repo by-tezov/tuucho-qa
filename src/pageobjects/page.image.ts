@@ -19,7 +19,7 @@ class PageImage extends Page {
 		if (platform == 'android') {
 			return $('android=new UiSelector().className("android.widget.Button").instance(0)');
 		} else {
-			return $(''); //TODO
+			return $('//XCUIElementTypeButton[@name="back"]');
 		}
 	}
 }
