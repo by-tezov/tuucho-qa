@@ -1,6 +1,6 @@
 export const config: WebdriverIO.Config = {
-	hostname: 'android-appium',
-	//hostname: 'localhost',
+// 	hostname: 'android-appium',
+	hostname: 'localhost',
 	capabilities: [
 		{
 			platformName: 'Android',
